@@ -54,7 +54,10 @@ public class TestingJobIsComplete : MonoBehaviour
         if (!m_alreadyCompleted && m_myJobHandle.IsCompleted)
         {
             // NOTE: This is required to avoid an exception stating "... You must call JobHandle.Complete() on the job TestingJobIsComplete:DoSomeJob, before you can read from the Unity.Collections.NativeArray`1[System.UInt32] safely"
-            // m_myJobHandle.Complete();
+            // Tracing data ownership requires dependencies
+            // to complete before the main thread can use them again. It is not enough to check JobHandle.IsCompleted
+            // https://docs.unity3d.com/Manual/JobSystemTroubleshooting.html
+            m_myJobHandle.Complete();
             Debug.Log($"<color=green>Completed with result {m_myJobResult[0]}</color>");
             m_alreadyCompleted = true;
         } 
